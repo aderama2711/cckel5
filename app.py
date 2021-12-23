@@ -1,5 +1,4 @@
 from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
-import tensorflow as tf
 from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
