@@ -1,4 +1,5 @@
 from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
@@ -7,6 +8,13 @@ import shutil
 import os
 from PIL import Image
 import json
+
+config = tf.compat.v1.ConfigProto()
+config.gpu_options.allow_growth=True
+session = tf.compat.v1.Session(config=config)
+
+tf.compat.v1.keras.backend.get_session
+cv2.ocl.setUseOpenCL(False)
 
 label = ["Wajah normal","Wajah berjerawat"]
 
@@ -70,6 +78,7 @@ UPLOAD_FOLDER = 'static/upload/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
@@ -140,6 +149,3 @@ def api():
                 except Exception as e:
                     print('Failed to delete %s. Reason: %s' % (file_path, e))
             return jsonify({'msg': 'success', 'result' : str, 'value' : json.dumps(val.item())})
-
-if __name__ == '__main__':
-    app.run(debug=True)
