@@ -149,3 +149,6 @@ def api():
                 except Exception as e:
                     print('Failed to delete %s. Reason: %s' % (file_path, e))
             return jsonify({'msg': 'success', 'result' : str, 'value' : json.dumps(val.item())})
+
+if __name__ == '__main__':
+    app.run(debug=True)
