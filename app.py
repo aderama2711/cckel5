@@ -150,7 +150,7 @@ def api():
                         shutil.rmtree(file_path)
                 except Exception as e:
                     print('Failed to delete %s. Reason: %s' % (file_path, e))
-            return jsonify({'msg': 'success', 'detect' : face , 'result' : str, 'value' : json.dumps(val.item())})
+            return jsonify({'msg': 'success', 'face' : face, 'result' : str, 'value' : json.dumps(val.item())})
 
 if __name__ == '__main__':
     app.run(debug=True)
