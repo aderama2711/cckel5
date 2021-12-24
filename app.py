@@ -139,7 +139,7 @@ def api():
             filename = secure_filename(file.filename)
             fileloc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(fileloc)
-            str, val = return_prediction(model,detect_face,fileloc)
+            str, val, face = return_prediction(model,detect_face,fileloc)
             folder = 'static/upload/'
             for filename in os.listdir(folder):
                 file_path = os.path.join(folder, filename)
@@ -150,7 +150,7 @@ def api():
                         shutil.rmtree(file_path)
                 except Exception as e:
                     print('Failed to delete %s. Reason: %s' % (file_path, e))
-            return jsonify({'msg': 'success', 'result' : str, 'value' : json.dumps(val.item())})
+            return jsonify({'msg': 'success', 'detect' : face , 'result' : str, 'value' : json.dumps(val.item())})
 
 if __name__ == '__main__':
     app.run(debug=True)
