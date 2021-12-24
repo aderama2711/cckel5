@@ -136,7 +136,6 @@ def api():
             filename = secure_filename(file.filename)
             fileloc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(fileloc)
-            img = Image.open(file.stream)
             str, val = return_prediction(model,detect_face,fileloc)
             folder = 'static/upload/'
             for filename in os.listdir(folder):
