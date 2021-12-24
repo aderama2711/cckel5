@@ -19,6 +19,7 @@ cv2.ocl.setUseOpenCL(False)
 label = ["Wajah normal","Wajah berjerawat"]
 
 def detect_face(img):
+    str = ""
     face_img = img.copy()
     #Reads face using haarcascades 
     face_cascade = cv2.CascadeClassifier('model/haarcascade_frontalface_alt2.xml')
@@ -39,6 +40,7 @@ def detect_face(img):
         left = int(0.05*faces.shape[1])
         right=left
         faces=cv2.copyMakeBorder(faces,top,bottom,left,right,borderType,None,[0,0,0])
+        str = "Wajah tidak terdeteksi"
     else: 
         for (x,y,w,h) in face_rects: 
             cv2.rectangle(face_img, (x,y), (x+w,y+h), (0,0,0), 10)
@@ -49,14 +51,15 @@ def detect_face(img):
             left = int(0.05*faces.shape[1])
             right=left
             faces=cv2.copyMakeBorder(faces,top,bottom,left,right,borderType,None,[0,0,0])
-    return faces
+        str = "Wajah terdeteksi"
+    return faces, str
 
   # Function to predict the class of the photo taken
 def return_prediction(model,detect_face,file):
     # Read the input image
     test = cv2.imread(file)
     test = cv2.cvtColor(test, cv2.COLOR_BGR2RGB)
-    result = detect_face(test)
+    result, face = detect_face(test)
     result = cv2.resize(result, (150, 150))
     result = np.asarray(result)
     result = np.expand_dims(result, axis=0)
@@ -66,7 +69,7 @@ def return_prediction(model,detect_face,file):
     # Output prediction
     str = label[int(np.round(prediction_prob))]
     val = prediction_prob[0][0]
-    return str, val
+    return str, val, face
 
 model = load_model('model/model.h5')
 
@@ -119,8 +122,8 @@ def upload_file():
             filename = secure_filename(file.filename)
             fileloc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(fileloc)
-            str, val = return_prediction(model,detect_face,fileloc)
-            return render_template('predict/index.html', result = str, pred = val, file = fileloc)
+            str, val, face = return_prediction(model,detect_face,fileloc)
+            return render_template('predict/index.html', detect = face, result = str, pred = val, file = fileloc)
 
 @app.route('/about_us', methods=['GET', 'POST'])
 def about():
